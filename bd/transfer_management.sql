@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Мар 12 2025 г., 01:32
+-- Время создания: Апр 18 2025 г., 13:45
 -- Версия сервера: 8.0.30
 -- Версия PHP: 8.0.22
 
@@ -24,34 +24,34 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `department`
+-- Структура таблицы `accounting_orders`
 --
 
-CREATE TABLE `department` (
+CREATE TABLE `accounting_orders` (
   `id` int NOT NULL,
-  `department` varchar(255) NOT NULL
+  `order_number` varchar(100) NOT NULL,
+  `order_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Дамп данных таблицы `department`
---
-
-INSERT INTO `department` (`id`, `department`) VALUES
-(1, 'asd');
 
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `notifications`
+-- Структура таблицы `departments`
 --
 
-CREATE TABLE `notifications` (
+CREATE TABLE `departments` (
   `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `message` text NOT NULL,
-  `is_read` tinyint(1) DEFAULT '0',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `name` varchar(255) NOT NULL,
+  `department_number` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `departments`
+--
+
+INSERT INTO `departments` (`id`, `name`, `department_number`) VALUES
+(1, '123', '123'),
+(7, '321', '231');
 
 -- --------------------------------------------------------
 
@@ -62,57 +62,184 @@ CREATE TABLE `notifications` (
 CREATE TABLE `parts` (
   `id` int NOT NULL,
   `name` varchar(255) NOT NULL,
-  `designation` varchar(100) NOT NULL
+  `nomenclature_number` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `parts`
+--
+
+INSERT INTO `parts` (`id`, `name`, `nomenclature_number`) VALUES
+(1, 'Шасси', 'A-100'),
+(2, 'Каркас', 'B-200'),
+(3, 'Проводка', 'C-300'),
+(4, 'Фундамент', 'D-400'),
+(5, 'Насосный блок', 'E-500'),
+(6, 'Контроллер', 'F-600'),
+(7, 'asd', '123()11');
 
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `transfer_requests`
+-- Структура таблицы `parts_in_stock`
 --
 
-CREATE TABLE `transfer_requests` (
+CREATE TABLE `parts_in_stock` (
   `id` int NOT NULL,
-  `sender_department_id` int NOT NULL,
-  `receiver_department_id` int NOT NULL,
-  `status` enum('Создана','Подтверждена','Отправлена','Получена') DEFAULT 'Создана',
-  `created_by` int NOT NULL,
-  `confirmed_by` int DEFAULT NULL,
-  `sent_by` int DEFAULT NULL,
-  `received_by` int DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `confirmed_at` timestamp NULL DEFAULT NULL,
-  `sent_at` timestamp NULL DEFAULT NULL,
-  `received_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `transfer_request_logs`
---
-
-CREATE TABLE `transfer_request_logs` (
-  `id` int NOT NULL,
-  `request_id` int NOT NULL,
-  `changed_by` int NOT NULL,
-  `old_status` enum('Создана','Подтверждена','Отправлена','Получена') NOT NULL,
-  `new_status` enum('Создана','Подтверждена','Отправлена','Получена') NOT NULL,
-  `changed_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `transfer_request_parts`
---
-
-CREATE TABLE `transfer_request_parts` (
-  `id` int NOT NULL,
-  `request_id` int NOT NULL,
   `part_id` int NOT NULL,
+  `department_id` int NOT NULL,
   `quantity` int NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `products`
+--
+
+CREATE TABLE `products` (
+  `id` int NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `products`
+--
+
+INSERT INTO `products` (`id`, `name`) VALUES
+(1, 'Трамвай'),
+(2, 'Нефтекачалка'),
+(3, 'qwerty');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `product_plan`
+--
+
+CREATE TABLE `product_plan` (
+  `id` int NOT NULL,
+  `product_id` int DEFAULT NULL,
+  `year` int DEFAULT NULL,
+  `quantity` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `product_plan`
+--
+
+INSERT INTO `product_plan` (`id`, `product_id`, `year`, `quantity`) VALUES
+(1, 1, 2025, 20),
+(2, 2, 2025, 100),
+(3, 3, 2025, 123);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `requests`
+--
+
+CREATE TABLE `requests` (
+  `id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `department_id` int DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `request_parts`
+--
+
+CREATE TABLE `request_parts` (
+  `id` int NOT NULL,
+  `request_id` int DEFAULT NULL,
+  `part_id` int DEFAULT NULL,
+  `quantity` int NOT NULL,
+  `accounting_order_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `stages`
+--
+
+CREATE TABLE `stages` (
+  `id` int NOT NULL,
+  `product_id` int DEFAULT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `stages`
+--
+
+INSERT INTO `stages` (`id`, `product_id`, `name`) VALUES
+(1, 1, 'Ходовая часть'),
+(2, 1, 'Кузов'),
+(3, 1, 'Электрика'),
+(4, 2, 'Основание'),
+(5, 2, 'Насос'),
+(6, 2, 'Электроника'),
+(7, 3, 'qwe'),
+(8, 3, 'asd');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `stage_parts`
+--
+
+CREATE TABLE `stage_parts` (
+  `id` int NOT NULL,
+  `stage_id` int DEFAULT NULL,
+  `part_id` int DEFAULT NULL,
+  `quantity_required` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `stage_parts`
+--
+
+INSERT INTO `stage_parts` (`id`, `stage_id`, `part_id`, `quantity_required`) VALUES
+(1, 1, 1, 4),
+(2, 2, 2, 2),
+(3, 3, 3, 10),
+(4, 4, 4, 1),
+(5, 5, 5, 1),
+(6, 6, 6, 3),
+(10, 7, 7, 123),
+(11, 8, 6, 222);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `transfers`
+--
+
+CREATE TABLE `transfers` (
+  `id` int NOT NULL,
+  `part_id` int NOT NULL,
+  `quantity` int NOT NULL,
+  `from_department_id` int NOT NULL,
+  `to_department_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `order_number` varchar(255) NOT NULL,
+  `status` enum('ожидает подтверждения','отправлено') NOT NULL DEFAULT 'ожидает подтверждения',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `transfers`
+--
+
+INSERT INTO `transfers` (`id`, `part_id`, `quantity`, `from_department_id`, `to_department_id`, `user_id`, `order_number`, `status`, `created_at`) VALUES
+(1, 1, 2, 1, 7, 2, '2', 'ожидает подтверждения', '2025-04-15 14:17:14'),
+(2, 7, 12, 1, 7, 2, '321', 'ожидает подтверждения', '2025-04-18 09:41:40'),
+(3, 7, 123, 1, 7, 2, '321', 'ожидает подтверждения', '2025-04-18 09:47:21'),
+(4, 2, 1, 1, 7, 2, '321', 'отправлено', '2025-04-18 09:47:42');
 
 -- --------------------------------------------------------
 
@@ -122,9 +249,10 @@ CREATE TABLE `transfer_request_parts` (
 
 CREATE TABLE `users` (
   `id` int NOT NULL,
-  `username` varchar(255) NOT NULL,
+  `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('0','1','2') NOT NULL COMMENT '0 - Админ, 1 - Диспетчер, 2 - Начальник смены',
+  `role` enum('admin','dispatcher','shift_manager') NOT NULL,
+  `full_name` varchar(255) NOT NULL,
   `department_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -132,63 +260,97 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `department_id`) VALUES
-(2, 'asd', '$2y$10$iMClVPldCT2W70scBajzfuhUDZ4YAKl5UTxPjQFCDfvkblicGkH9q', '0', 1),
-(3, 'qwe', '76d80224611fc919a5d54f0ff9fba446', '0', 1),
-(7, '1', 'c4ca4238a0b923820dcc509a6f75849b', '1', 1);
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `full_name`, `department_id`) VALUES
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin', '123', 1),
+(2, '1233', 'e034fb6b66aacc1d48f445ddfb08da98', 'dispatcher', '1233', 1),
+(3, '222', 'bcbe3365e6ac95ea2c0343a2395834dd', 'dispatcher', '222', 7),
+(4, '321', 'caf1a3dfb505ffed0d024130f58c5cfa', 'shift_manager', '321', 7);
 
 --
 -- Индексы сохранённых таблиц
 --
 
 --
--- Индексы таблицы `department`
+-- Индексы таблицы `accounting_orders`
 --
-ALTER TABLE `department`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `department` (`department`);
+ALTER TABLE `accounting_orders`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Индексы таблицы `notifications`
+-- Индексы таблицы `departments`
 --
-ALTER TABLE `notifications`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+ALTER TABLE `departments`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `parts`
 --
 ALTER TABLE `parts`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `designation` (`designation`);
+  ADD UNIQUE KEY `nomenclature_number` (`nomenclature_number`);
 
 --
--- Индексы таблицы `transfer_requests`
+-- Индексы таблицы `parts_in_stock`
 --
-ALTER TABLE `transfer_requests`
+ALTER TABLE `parts_in_stock`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sender_department_id` (`sender_department_id`),
-  ADD KEY `receiver_department_id` (`receiver_department_id`),
-  ADD KEY `created_by` (`created_by`),
-  ADD KEY `confirmed_by` (`confirmed_by`),
-  ADD KEY `sent_by` (`sent_by`),
-  ADD KEY `received_by` (`received_by`);
+  ADD KEY `part_id` (`part_id`),
+  ADD KEY `department_id` (`department_id`);
 
 --
--- Индексы таблицы `transfer_request_logs`
+-- Индексы таблицы `products`
 --
-ALTER TABLE `transfer_request_logs`
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `product_plan`
+--
+ALTER TABLE `product_plan`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- Индексы таблицы `requests`
+--
+ALTER TABLE `requests`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `department_id` (`department_id`);
+
+--
+-- Индексы таблицы `request_parts`
+--
+ALTER TABLE `request_parts`
   ADD PRIMARY KEY (`id`),
   ADD KEY `request_id` (`request_id`),
-  ADD KEY `changed_by` (`changed_by`);
+  ADD KEY `part_id` (`part_id`),
+  ADD KEY `accounting_order_id` (`accounting_order_id`);
 
 --
--- Индексы таблицы `transfer_request_parts`
+-- Индексы таблицы `stages`
 --
-ALTER TABLE `transfer_request_parts`
+ALTER TABLE `stages`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `request_id` (`request_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- Индексы таблицы `stage_parts`
+--
+ALTER TABLE `stage_parts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `stage_id` (`stage_id`),
   ADD KEY `part_id` (`part_id`);
+
+--
+-- Индексы таблицы `transfers`
+--
+ALTER TABLE `transfers`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `part_id` (`part_id`),
+  ADD KEY `from_department_id` (`from_department_id`),
+  ADD KEY `to_department_id` (`to_department_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Индексы таблицы `users`
@@ -203,87 +365,136 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT для таблицы `department`
+-- AUTO_INCREMENT для таблицы `accounting_orders`
 --
-ALTER TABLE `department`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `accounting_orders`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT для таблицы `notifications`
+-- AUTO_INCREMENT для таблицы `departments`
 --
-ALTER TABLE `notifications`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `departments`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT для таблицы `parts`
 --
 ALTER TABLE `parts`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT для таблицы `parts_in_stock`
+--
+ALTER TABLE `parts_in_stock`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT для таблицы `transfer_requests`
+-- AUTO_INCREMENT для таблицы `products`
 --
-ALTER TABLE `transfer_requests`
+ALTER TABLE `products`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT для таблицы `product_plan`
+--
+ALTER TABLE `product_plan`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT для таблицы `requests`
+--
+ALTER TABLE `requests`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT для таблицы `transfer_request_logs`
+-- AUTO_INCREMENT для таблицы `request_parts`
 --
-ALTER TABLE `transfer_request_logs`
+ALTER TABLE `request_parts`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT для таблицы `transfer_request_parts`
+-- AUTO_INCREMENT для таблицы `stages`
 --
-ALTER TABLE `transfer_request_parts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `stages`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT для таблицы `stage_parts`
+--
+ALTER TABLE `stage_parts`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT для таблицы `transfers`
+--
+ALTER TABLE `transfers`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
 
 --
--- Ограничения внешнего ключа таблицы `notifications`
+-- Ограничения внешнего ключа таблицы `parts_in_stock`
 --
-ALTER TABLE `notifications`
-  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+ALTER TABLE `parts_in_stock`
+  ADD CONSTRAINT `parts_in_stock_ibfk_1` FOREIGN KEY (`part_id`) REFERENCES `parts` (`id`),
+  ADD CONSTRAINT `parts_in_stock_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`);
 
 --
--- Ограничения внешнего ключа таблицы `transfer_requests`
+-- Ограничения внешнего ключа таблицы `product_plan`
 --
-ALTER TABLE `transfer_requests`
-  ADD CONSTRAINT `transfer_requests_ibfk_1` FOREIGN KEY (`sender_department_id`) REFERENCES `department` (`id`),
-  ADD CONSTRAINT `transfer_requests_ibfk_2` FOREIGN KEY (`receiver_department_id`) REFERENCES `department` (`id`),
-  ADD CONSTRAINT `transfer_requests_ibfk_3` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `transfer_requests_ibfk_4` FOREIGN KEY (`confirmed_by`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `transfer_requests_ibfk_5` FOREIGN KEY (`sent_by`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `transfer_requests_ibfk_6` FOREIGN KEY (`received_by`) REFERENCES `users` (`id`);
+ALTER TABLE `product_plan`
+  ADD CONSTRAINT `product_plan_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
 
 --
--- Ограничения внешнего ключа таблицы `transfer_request_logs`
+-- Ограничения внешнего ключа таблицы `requests`
 --
-ALTER TABLE `transfer_request_logs`
-  ADD CONSTRAINT `transfer_request_logs_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `transfer_requests` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `transfer_request_logs_ibfk_2` FOREIGN KEY (`changed_by`) REFERENCES `users` (`id`);
+ALTER TABLE `requests`
+  ADD CONSTRAINT `requests_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `requests_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`);
 
 --
--- Ограничения внешнего ключа таблицы `transfer_request_parts`
+-- Ограничения внешнего ключа таблицы `request_parts`
 --
-ALTER TABLE `transfer_request_parts`
-  ADD CONSTRAINT `transfer_request_parts_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `transfer_requests` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `transfer_request_parts_ibfk_2` FOREIGN KEY (`part_id`) REFERENCES `parts` (`id`);
+ALTER TABLE `request_parts`
+  ADD CONSTRAINT `request_parts_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `requests` (`id`),
+  ADD CONSTRAINT `request_parts_ibfk_2` FOREIGN KEY (`part_id`) REFERENCES `parts` (`id`),
+  ADD CONSTRAINT `request_parts_ibfk_3` FOREIGN KEY (`accounting_order_id`) REFERENCES `accounting_orders` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `stages`
+--
+ALTER TABLE `stages`
+  ADD CONSTRAINT `stages_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `stage_parts`
+--
+ALTER TABLE `stage_parts`
+  ADD CONSTRAINT `stage_parts_ibfk_1` FOREIGN KEY (`stage_id`) REFERENCES `stages` (`id`),
+  ADD CONSTRAINT `stage_parts_ibfk_2` FOREIGN KEY (`part_id`) REFERENCES `parts` (`id`);
+
+--
+-- Ограничения внешнего ключа таблицы `transfers`
+--
+ALTER TABLE `transfers`
+  ADD CONSTRAINT `transfers_ibfk_1` FOREIGN KEY (`part_id`) REFERENCES `parts` (`id`),
+  ADD CONSTRAINT `transfers_ibfk_2` FOREIGN KEY (`from_department_id`) REFERENCES `departments` (`id`),
+  ADD CONSTRAINT `transfers_ibfk_3` FOREIGN KEY (`to_department_id`) REFERENCES `departments` (`id`),
+  ADD CONSTRAINT `transfers_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
