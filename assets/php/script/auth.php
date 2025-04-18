@@ -26,17 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         } else {
             // Если пользователь не найден
-            echo json_encode(['status' => 'error', 'message' => '1']);
+            echo json_encode(['status' => 'error', 'message' => 'Не верные данный логин или пароль']);
             exit();
         }
     } else {
         // Если данные не были переданы
-        echo json_encode(['status' => 'error', 'message' => '2']);
+        echo json_encode(['status' => 'error', 'message' => 'данные не были переданы']);
         exit();
     }
 } else {
     // Если метод запроса не POST
-    echo json_encode(['status' => 'error', 'message' => '3']);
+    echo json_encode(['status' => 'error', 'message' => 'Не верный запрос']);
     exit();
 }
 ?>
