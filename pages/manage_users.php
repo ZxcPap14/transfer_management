@@ -2,9 +2,8 @@
 session_start();
 include_once '../assets/php/script/connect.php';
 include_once '../assets/php/script/queries.php';
-
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../index.php');
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
     exit();
 }
 
@@ -178,7 +177,7 @@ $users = getUsersQuery(); // Эта функция должна включать
             </td>
             <td>
                 <!-- Привязка цехов -->
-                <td>
+
                     <button onclick="openAssignDepartmentModal(<?= $user['id'] ?>)">Привязать цех</button>
                     <select id="department-<?= $user['id'] ?>" >
                         <?php 
@@ -195,7 +194,6 @@ $users = getUsersQuery(); // Эта функция должна включать
                             <option value="<?= $dep['id'] ?>" selected><?= htmlspecialchars($dep['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
-                </td>
 
                 <!-- Модальное окно для привязки цехов -->
                 <div id="assignDepartmentModal" style="display:none;">

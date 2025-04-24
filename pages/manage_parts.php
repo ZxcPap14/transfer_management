@@ -2,7 +2,10 @@
 session_start();
 require_once '../assets/php/script/queries.php';
 require_once '../assets/php/script/connect.php';
-
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
 $parts = getAllParts();
 ?>
 

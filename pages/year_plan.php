@@ -2,7 +2,10 @@
 session_start();
 require_once '../assets/php/script/connect.php';
 require_once '../assets/php/script/queries.php';
-
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
 // Получаем данные для выпадающих списков
 $products = getAllProducts();        // функция должна вернуть id, name, designation
 $orders = getAllAccountingOrdersId(); // функция должна вернуть order_number

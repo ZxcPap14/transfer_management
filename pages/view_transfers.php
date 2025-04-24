@@ -2,7 +2,10 @@
 session_start();
 include_once '../assets/php/script/connect.php';
 include_once '../assets/php/script/queries.php';
-
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
 $role = $_SESSION['role'];
 $userId = $_SESSION['user_id'];
 $user = getUserById($userId);

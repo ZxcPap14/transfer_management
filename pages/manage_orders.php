@@ -2,8 +2,11 @@
 session_start();
 require_once '../assets/php/script/connect.php';
 require_once '../assets/php/script/queries.php';
-
 $orders = getAllAccountingOrders();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>

@@ -3,8 +3,6 @@ session_start();
 include_once '../assets/php/script/connect.php';
 include_once '../assets/php/script/queries.php';
 
-
-// Проверяем, если пользователь не авторизован, перенаправляем на страницу входа
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
@@ -41,13 +39,15 @@ $products = getProducts();
 </head>
 
 <body>
-    <div class="container">
-        <h2>Панель управления</h2>
+<h2>Панель управления</h2>
 
-
-        <?php
+<?php
         include_once '../assets/php/head.php';
         ?>
+    <div class="container">
+
+
+        
 
         <!-- Контент для разных ролей -->
         <div class="role-section">

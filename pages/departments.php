@@ -3,11 +3,6 @@ session_start();
 include_once '../assets/php/script/connect.php';
 include_once '../assets/php/script/queries.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../index.php');
-    exit();
-}
-
 // Получаем список департаментов
 $stmt = $pdo->query("SELECT * FROM departments");
 $departments = $stmt->fetchAll(PDO::FETCH_ASSOC);
