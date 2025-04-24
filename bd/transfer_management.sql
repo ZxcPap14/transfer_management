@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 18 2025 г., 13:45
+-- Время создания: Апр 24 2025 г., 20:06
 -- Версия сервера: 8.0.30
 -- Версия PHP: 8.0.22
 
@@ -30,8 +30,17 @@ SET time_zone = "+00:00";
 CREATE TABLE `accounting_orders` (
   `id` int NOT NULL,
   `order_number` varchar(100) NOT NULL,
-  `order_date` date NOT NULL
+  `description` varchar(255) NOT NULL,
+  `customer` varchar(255) NOT NULL,
+  `contract_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `accounting_orders`
+--
+
+INSERT INTO `accounting_orders` (`id`, `order_number`, `description`, `customer`, `contract_date`) VALUES
+(1, '1234', '123', '123', '2025-04-23 12:56:49');
 
 -- --------------------------------------------------------
 
@@ -50,7 +59,7 @@ CREATE TABLE `departments` (
 --
 
 INSERT INTO `departments` (`id`, `name`, `department_number`) VALUES
-(1, '123', '123'),
+(1, '1231', '1233'),
 (7, '321', '231');
 
 -- --------------------------------------------------------
@@ -70,7 +79,7 @@ CREATE TABLE `parts` (
 --
 
 INSERT INTO `parts` (`id`, `name`, `nomenclature_number`) VALUES
-(1, 'Шасси', 'A-100'),
+(1, 'Шасси1', 'A-1001'),
 (2, 'Каркас', 'B-200'),
 (3, 'Проводка', 'C-300'),
 (4, 'Фундамент', 'D-400'),
@@ -99,17 +108,19 @@ CREATE TABLE `parts_in_stock` (
 
 CREATE TABLE `products` (
   `id` int NOT NULL,
-  `name` varchar(255) NOT NULL
+  `name` varchar(255) NOT NULL,
+  `designation` varchar(255) NOT NULL,
+  `nomenclature_number` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `products`
 --
 
-INSERT INTO `products` (`id`, `name`) VALUES
-(1, 'Трамвай'),
-(2, 'Нефтекачалка'),
-(3, 'qwerty');
+INSERT INTO `products` (`id`, `name`, `designation`, `nomenclature_number`) VALUES
+(1, 'Трамвай', 'Трамвай', '53454567-В'),
+(2, 'Нефтекачалка', 'Нефтекачалка', '45146272-А'),
+(3, 'qwerty', '', '');
 
 -- --------------------------------------------------------
 
@@ -121,17 +132,17 @@ CREATE TABLE `product_plan` (
   `id` int NOT NULL,
   `product_id` int DEFAULT NULL,
   `year` int DEFAULT NULL,
-  `quantity` int NOT NULL
+  `quantity` int NOT NULL,
+  `order_number` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `product_plan`
 --
 
-INSERT INTO `product_plan` (`id`, `product_id`, `year`, `quantity`) VALUES
-(1, 1, 2025, 20),
-(2, 2, 2025, 100),
-(3, 3, 2025, 123);
+INSERT INTO `product_plan` (`id`, `product_id`, `year`, `quantity`, `order_number`) VALUES
+(4, 1, 2025, 1, 1234),
+(5, 3, 2026, 23, 1234);
 
 -- --------------------------------------------------------
 
@@ -252,19 +263,38 @@ CREATE TABLE `users` (
   `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('admin','dispatcher','shift_manager') NOT NULL,
-  `full_name` varchar(255) NOT NULL,
-  `department_id` int DEFAULT NULL
+  `full_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `full_name`, `department_id`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin', '123', 1),
-(2, '1233', 'e034fb6b66aacc1d48f445ddfb08da98', 'dispatcher', '1233', 1),
-(3, '222', 'bcbe3365e6ac95ea2c0343a2395834dd', 'dispatcher', '222', 7),
-(4, '321', 'caf1a3dfb505ffed0d024130f58c5cfa', 'shift_manager', '321', 7);
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `full_name`) VALUES
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin', '123'),
+(2, '1233', 'e034fb6b66aacc1d48f445ddfb08da98', 'dispatcher', '1233'),
+(3, '222', 'bcbe3365e6ac95ea2c0343a2395834dd', 'dispatcher', '222'),
+(4, '321', 'caf1a3dfb505ffed0d024130f58c5cfa', 'shift_manager', '321'),
+(5, '1', 'c4ca4238a0b923820dcc509a6f75849b', 'admin', '1');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `user_departments`
+--
+
+CREATE TABLE `user_departments` (
+  `user_id` int NOT NULL,
+  `department_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `user_departments`
+--
+
+INSERT INTO `user_departments` (`user_id`, `department_id`) VALUES
+(1, 1),
+(1, 7);
 
 --
 -- Индексы сохранённых таблиц
@@ -357,7 +387,13 @@ ALTER TABLE `transfers`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Индексы таблицы `user_departments`
+--
+ALTER TABLE `user_departments`
+  ADD PRIMARY KEY (`user_id`,`department_id`),
   ADD KEY `department_id` (`department_id`);
 
 --
@@ -368,7 +404,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `accounting_orders`
 --
 ALTER TABLE `accounting_orders`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `departments`
@@ -380,7 +416,7 @@ ALTER TABLE `departments`
 -- AUTO_INCREMENT для таблицы `parts`
 --
 ALTER TABLE `parts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `parts_in_stock`
@@ -398,7 +434,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT для таблицы `product_plan`
 --
 ALTER TABLE `product_plan`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `requests`
@@ -416,7 +452,7 @@ ALTER TABLE `request_parts`
 -- AUTO_INCREMENT для таблицы `stages`
 --
 ALTER TABLE `stages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT для таблицы `stage_parts`
@@ -434,7 +470,7 @@ ALTER TABLE `transfers`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
@@ -491,10 +527,11 @@ ALTER TABLE `transfers`
   ADD CONSTRAINT `transfers_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Ограничения внешнего ключа таблицы `users`
+-- Ограничения внешнего ключа таблицы `user_departments`
 --
-ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`);
+ALTER TABLE `user_departments`
+  ADD CONSTRAINT `user_departments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `user_departments_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

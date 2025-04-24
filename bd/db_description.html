@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объяснение структуры базы данных "transfer_management"</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@material-ui/core/styles.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #3f51b5;
+        }
+        h2 {
+            color: #ff5722;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #3f51b5;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Структура базы данных "transfer_management"</h1>
+
+    <p>Эта база данных используется для управления перемещением деталей между цехами, а также для учета заказов, деталей, этапов сборки и прочего.</p>
+
+    <h2>1. Таблица "accounting_orders"</h2>
+    <p>Содержит данные о бухгалтерских заказах, которые необходимы для учета отправок.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор заказа.</td>
+        </tr>
+        <tr>
+            <td>order_number</td>
+            <td>Номер заказа.</td>
+        </tr>
+        <tr>
+            <td>description</td>
+            <td>Описание заказа.</td>
+        </tr>
+        <tr>
+            <td>customer</td>
+            <td>Заказчик (кто инициировал заказ).</td>
+        </tr>
+        <tr>
+            <td>contract_date</td>
+            <td>Дата контракта (время создания).</td>
+        </tr>
+    </table>
+
+    <h2>2. Таблица "departments"</h2>
+    <p>Содержит информацию о цехах.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор цеха.</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>Название цеха.</td>
+        </tr>
+        <tr>
+            <td>department_number</td>
+            <td>Номер цеха.</td>
+        </tr>
+    </table>
+
+    <h2>3. Таблица "parts"</h2>
+    <p>Содержит информацию о деталях, используемых для сборки изделий.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор детали.</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>Название детали.</td>
+        </tr>
+        <tr>
+            <td>nomenclature_number</td>
+            <td>Номер номенклатуры (уникальный идентификатор детали).</td>
+        </tr>
+    </table>
+
+    <h2>4. Таблица "parts_in_stock"</h2>
+    <p>Хранит данные о наличии деталей в цехах.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор записи.</td>
+        </tr>
+        <tr>
+            <td>part_id</td>
+            <td>Идентификатор детали (ссылка на таблицу "parts").</td>
+        </tr>
+        <tr>
+            <td>department_id</td>
+            <td>Идентификатор цеха (ссылка на таблицу "departments").</td>
+        </tr>
+        <tr>
+            <td>quantity</td>
+            <td>Количество данной детали в этом цехе.</td>
+        </tr>
+    </table>
+
+    <h2>5. Таблица "products"</h2>
+    <p>Содержит данные о готовых продуктах.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор продукта.</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>Название продукта.</td>
+        </tr>
+        <tr>
+            <td>designation</td>
+            <td>Тип или назначение продукта.</td>
+        </tr>
+        <tr>
+            <td>nomenclature_number</td>
+            <td>Номер номенклатуры продукта.</td>
+        </tr>
+    </table>
+
+    <h2>6. Таблица "product_plan"</h2>
+    <p>Хранит данные о планах по производству продуктов на каждый год.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор плана.</td>
+        </tr>
+        <tr>
+            <td>product_id</td>
+            <td>Идентификатор продукта (ссылка на таблицу "products").</td>
+        </tr>
+        <tr>
+            <td>year</td>
+            <td>Год, на который планируется производство.</td>
+        </tr>
+        <tr>
+            <td>quantity</td>
+            <td>Количество продукции, которое необходимо произвести.</td>
+        </tr>
+        <tr>
+            <td>order_number</td>
+            <td>Номер заказа, с которым связан данный план.</td>
+        </tr>
+    </table>
+
+    <h2>7. Таблица "requests"</h2>
+    <p>Хранит данные о запросах на детали, сделанных пользователями для цехов.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор запроса.</td>
+        </tr>
+        <tr>
+            <td>user_id</td>
+            <td>Идентификатор пользователя, который создал запрос (ссылка на таблицу "users").</td>
+        </tr>
+        <tr>
+            <td>department_id</td>
+            <td>Идентификатор цеха, которому предназначен запрос (ссылка на таблицу "departments").</td>
+        </tr>
+        <tr>
+            <td>created_at</td>
+            <td>Дата и время создания запроса.</td>
+        </tr>
+    </table>
+
+    <h2>8. Таблица "request_parts"</h2>
+    <p>Содержит данные о деталях, запрашиваемых для конкретных запросов.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор записи.</td>
+        </tr>
+        <tr>
+            <td>request_id</td>
+            <td>Идентификатор запроса (ссылка на таблицу "requests").</td>
+        </tr>
+        <tr>
+            <td>part_id</td>
+            <td>Идентификатор детали (ссылка на таблицу "parts").</td>
+        </tr>
+        <tr>
+            <td>quantity</td>
+            <td>Количество запрашиваемой детали.</td>
+        </tr>
+        <tr>
+            <td>accounting_order_id</td>
+            <td>Идентификатор бухгалтерского заказа (ссылка на таблицу "accounting_orders").</td>
+        </tr>
+    </table>
+
+    <h2>9. Таблица "stages"</h2>
+    <p>Хранит информацию о этапах сборки продукции.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор этапа.</td>
+        </tr>
+        <tr>
+            <td>product_id</td>
+            <td>Идентификатор продукта (ссылка на таблицу "products").</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>Название этапа.</td>
+        </tr>
+    </table>
+
+    <h2>10. Таблица "stage_parts"</h2>
+    <p>Содержит данные о деталях, которые должны быть использованы на каждом этапе сборки.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор записи.</td>
+        </tr>
+        <tr>
+            <td>stage_id</td>
+            <td>Идентификатор этапа сборки (ссылка на таблицу "stages").</td>
+        </tr>
+        <tr>
+            <td>part_id</td>
+            <td>Идентификатор детали (ссылка на таблицу "parts").</td>
+        </tr>
+        <tr>
+            <td>quantity</td>
+            <td>Количество деталей, необходимое на данном этапе.</td>
+        </tr>
+    </table>
+
+    <h2>11. Таблица "transfers"</h2>
+    <p>Хранит информацию о перемещении деталей между цехами.</p>
+    <table>
+        <tr>
+            <th>Поле</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>Уникальный идентификатор перемещения.</td>
+        </tr>
+        <tr>
+            <td>part_id</td>
+            <td>Идентификатор детали (ссылка на таблицу "parts").</td>
+        </tr>
+        <tr>
+            <td>quantity</td>
+            <td>Количество перемещаемых деталей.</td>
+        </tr>
+        <tr>
+            <td>from_department_id</td>
+            <td>Идентификатор цеха отправителя (ссылка на таблицу "departments").</td>
+        </tr>
+        <tr>
+            <td>to_department_id</td>
+            <td>Идентификатор цеха получателя (ссылка на таблицу "departments").</td>
+        </tr>
+        <tr>
+            <td>user_id</td>
+            <td>Идентификатор пользователя, который инициировал перемещение (ссылка на таблицу "users").</td>
+        </tr>
+        <tr>
+            <td>order_number</td>
+            <td>Номер бухгалтерского заказа.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>Статус перемещения (ожидает подтверждения, отправлено, получено и т.д.).</td>
+        </tr>
+        <tr>
+            <td>created_at</td>
+            <td>Дата и время перемещения.</td>
+        </tr>
+    </table>
+
+</body>
+</html>
