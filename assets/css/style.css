@@ -1,52 +1,116 @@
-/* Стиль для dashboard */
+/* Базовый стиль страницы */
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+    color: #212121;
 }
 
+/* Контейнер */
 .container {
-    width: 80%;
+    max-width: 1200px;
     margin: auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Заголовок */
 h2 {
     text-align: center;
-    margin-bottom: 20px;
+    color: #1e88e5;
+    margin-bottom: 30px;
+    font-weight: 500;
+    font-size: 28px;
 }
 
+/* Навигация */
 nav ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
     display: flex;
     justify-content: center;
+    margin-bottom: 30px;
 }
 
 nav ul li {
-    margin-right: 20px;
+    margin: 0 10px;
 }
 
 nav ul li a {
     text-decoration: none;
-    color: #333;
-    font-size: 16px;
+    color: #1e88e5;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+nav ul li a:hover {
+    background-color: #e3f2fd;
+}
+
+/* Секции */
 .role-section {
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
+/* Таблицы */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
+    padding: 14px 16px;
     text-align: center;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 th {
-    background-color: #f4f4f4;
+    background-color: #1976d2;
+    color: white;
+    font-weight: 500;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Кнопки */
+button, .btn {
+    padding: 10px 18px;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover, .btn:hover {
+    background-color: #1565c0;
+}
+
+/* Alert */
+.alert {
+    margin-top: 20px;
+    padding: 16px;
+    background-color: #f44336;
+    color: white;
+    border-radius: 4px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }

@@ -1,20 +1,29 @@
 <?php
 session_start();
-require_once 'queries.php';
+include_once 'connect.php';
+header('Content-Type: application/json');
 
 $data = json_decode(file_get_contents("php://input"), true);
-$transferId = $data['id'] ?? null;
 
-if (!$transferId) {
-    echo json_encode(["status" => "error", "message" => "ID не передан"]);
+if (!isset($data['id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'ID не передан']);
     exit;
 }
 
+$id = $data['id'];
+
 try {
-    $stmt = $pdo->prepare("DELETE FROM transfers WHERE id = :id");
-    $stmt->execute(['id' => $transferId]);
-    echo json_encode(["status" => "success", "message" => "Трансфер удалён"]);
-} catch (PDOException $e) {
-    echo json_encode(["status" => "error", "message" => "Ошибка при удалении: " . $e->getMessage()]);
+    $stmt = $pdo->prepare("DELETE FROM transfers WHERE id = ?");
+    $stmt->execute([$id]);
+
+    // Логирование
+    $userId = $_SESSION['user_id'] ?? null;
+    if ($userId) {
+        $logStmt = $pdo->prepare("INSERT INTO transfer_logs (transfer_id, user_id, action, timestamp) VALUES (?, ?, ?, NOW())");
+        $logStmt->execute([$id, $userId, "Удален трансфер"]);
+    }
+
+    echo json_encode(['status' => 'success', 'message' => 'Трансфер удален']);
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Ошибка: ' . $e->getMessage()]);
 }
-    

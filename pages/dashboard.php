@@ -13,7 +13,8 @@ if (!isset($_SESSION['user_id'])) {
 // Получаем информацию о пользователе
 $user_id = $_SESSION['user_id'];
 $user = getUserById($user_id); // Запрос для получения данных пользователя
-$departmentId = $user['department_id'];
+$departments = getDepartmentsByUserId($user_id); // новая функция
+$departmentId = $departments[0]['id'] ?? null;
 $order = ($_GET['order'] ?? 'desc') === 'asc' ? 'ASC' : 'DESC';
 $receivedTransfers = getTransfersByToDepartment($departmentId, $order);
 // Определяем роль пользователя
@@ -45,7 +46,7 @@ $products = getProducts();
 
 
         <?php
-        include_once '..\assets\php\head.php';
+        include_once '../assets/php/head.php';
         ?>
 
         <!-- Контент для разных ролей -->
@@ -66,10 +67,13 @@ $products = getProducts();
                         <tr>
                             <td><?= $user['id'] ?></td>
                             <td><?= htmlspecialchars($user['username']) ?></td>
-                            <td><?= $user['role'] ?></td>
-                            <td><?= htmlspecialchars($user['department_name']) ?></td>
+                            <td><?= htmlspecialchars($user['role']) ?></td>
+                            <td><?= htmlspecialchars($user['department_names']) ?></td>
                         </tr>
                     <?php endforeach; ?>
+
+
+
                 </table>
             <?php elseif ($role === 'dispatcher'): // Диспетчер ?>
                 <h4>Отправить детали</h4>

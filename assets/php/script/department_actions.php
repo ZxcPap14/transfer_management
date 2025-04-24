@@ -6,9 +6,8 @@ header('Content-Type: application/json');
 $action = $_POST['action'] ?? '';
 $id = $_POST['id'] ?? null;
 $name = trim($_POST['name'] ?? '');
-
+$department_number = trim($_POST['code'] ?? '');
 if ($action === 'add') {
-    $department_number = trim($_POST['number'] ?? '');
     if (empty($name) || empty($department_number)) {
         echo json_encode(['status' => 'error', 'message' => 'Название и номер департамента не могут быть пустыми']);
         exit;
@@ -26,8 +25,8 @@ if ($action === 'edit') {
         exit;
     }
 
-    $stmt = $pdo->prepare("UPDATE departments SET name = ? WHERE id = ?");
-    $stmt->execute([$name, $id]);
+    $stmt = $pdo->prepare("UPDATE departments SET name = ? ,  department_number = ? WHERE id = ?");
+    $stmt->execute([$name, $department_number, $id]);
     echo json_encode(['status' => 'success', 'message' => 'Название обновлено']);
     exit;
 }

@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once '../assets/php/script/connect.php';
 include_once '../assets/php/script/queries.php';
 if (!isset($_SESSION['user_id'])) {
